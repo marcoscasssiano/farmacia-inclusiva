@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Prescrição</title>
+</head>
+<body>
+    <h1>Agendar Prescrição</h1>
+    <form id="scheduleForm">
+        <label for="cliente">Cliente:</label>
+        <select id="cliente" name="cliente" required>
+            <option value="" selected disabled>Selecione um cliente</option>
+        </select><br>
+        <label for="produto">Produto:</label>
+        <select id="produto" name="produto" required>
+            <option value="" selected disabled>Selecione um produto</option>
+        </select><br>
+        <label for="vezes">Número de Vezes:</label>
+        <input type="number" id="vezes" name="vezes" required><br>
+        <label for="hora">Hora:</label>
+        <input type="time" id="hora" name="hora" required><br>
+        <button type="submit">Agendar</button>
+    </form>
+
+    <script src="./script/prescricao.js"></script>
+</body>
+</html>
