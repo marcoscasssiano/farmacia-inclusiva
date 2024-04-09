@@ -67,7 +67,7 @@ app.use('/api/produto', authenticate, produtoRoutes);
 app.use('/api/prescricao', authenticate, prescricaoRoutes);
 
 // Caminho para o banco de dados SQLite
-const dbPath = path.resolve(__dirname, 'database.db');
+const dbPath = path.resolve(__dirname, '.', 'db', 'database.db');
 
 // Banco de dados SQLite
 const db = new sqlite3.Database(dbPath);
