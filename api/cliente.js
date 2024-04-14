@@ -15,17 +15,42 @@ const db = new sqlite3.Database(dbPath);
 // Rotas CRUD para clientes
 // Create
 router.post('/', (req, res) => {
-    const { nome, telefone } = req.body;
-    db.run(`INSERT INTO clientes (nome, telefone) VALUES (?, ?)`, [nome, telefone], function(err) {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json({
-            id: this.lastID,
-            nome: nome,
-            telefone: telefone
+    const {
+        nome,
+        telefone,
+        cpf,
+        email,
+        sexo,
+        nascimento
+    } = req.body;
+    db.run(`INSERT INTO clientes (
+        nome, 
+        telefone, 
+        cpf, 
+        email, 
+        sexo, 
+        nascimento) 
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+            nome,
+            telefone,
+            cpf,
+            email,
+            sexo,
+            nascimento
+        ], function (err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({
+                nome: nome,
+                telefone: telefone,
+                cpf: cpf,
+                email: email,
+                sexo: sexo,
+                nascimento: nascimento
+            });
         });
-    });
 });
 
 // Read
@@ -42,7 +67,7 @@ router.get('/', (req, res) => {
 router.put('/:id', (req, res) => {
     const { nome, telefone } = req.body;
     const { id } = req.params;
-    db.run(`UPDATE clientes SET nome = ?, telefone = ? WHERE id = ?`, [nome, telefone, id], function(err) {
+    db.run(`UPDATE clientes SET nome = ?, telefone = ? WHERE id = ?`, [nome, telefone, id], function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -55,9 +80,9 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete
-router.delete('/:id', (req, res) => {
-    const { id } = req.params;
-    db.run(`DELETE FROM clientes WHERE id = ?`, id, function(err) {
+router.delete('/:telefone', (req, res) => {
+    const { telefone } = req.params;
+    db.run(`DELETE FROM clientes WHERE telefone = ?`, telefone, function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }

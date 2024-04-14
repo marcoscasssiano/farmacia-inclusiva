@@ -51,22 +51,22 @@ function populateClientes() {
 }
 
 // Função para popular dinamicamente a lista de produtos
-function populateProdutos() {
-    fetch('http://localhost:3000/api/produto')
-        .then(response => response.json())
-        .then(data => {
-            const selectProduto = document.getElementById('produto');
-            selectProduto.innerHTML = ""; // Limpar o conteúdo anterior
-            data.forEach(produto => {
-                const option = document.createElement('option');
-                option.value = produto.nome;
-                option.textContent = produto.nome;
-                selectProduto.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Erro:', error));
-}
+// function populateProdutos() {
+//     fetch('http://localhost:3000/api/produto')
+//         .then(response => response.json())
+//         .then(data => {
+//             const selectProduto = document.getElementById('produto');
+//             selectProduto.innerHTML = ""; // Limpar o conteúdo anterior
+//             data.forEach(produto => {
+//                 const option = document.createElement('option');
+//                 option.value = produto.nome;
+//                 option.textContent = produto.nome;
+//                 selectProduto.appendChild(option);
+//             });
+//         })
+//     .catch(error => console.error('Erro:', error));
+// }
 
 // Chamar as funções para popular as listas de clientes e produtos
 populateClientes();
-populateProdutos();
+// populateProdutos();
