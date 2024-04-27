@@ -47,32 +47,26 @@ app.post('/login', (req, res) => {
         // Reiniciar o temporizador quando o login é bem-sucedido
         clearTimeout(authenticationTimer);
         authenticationTimer = setTimeout(resetAuthentication, 15 * 60 * 1000);
-        res.sendStatus(200); // Login bem-sucedido
+        res.sendStatus(200);
     } else {
-        res.sendStatus(401); // Credenciais inválidas
+        res.sendStatus(401);
     }
 });
 
-// Servir arquivos estáticos na pasta "pages"
 app.use(express.static('pages'));
 
-// Importar rotas da API
 const clienteRoutes = require('./api/cliente');
 const produtoRoutes = require('./api/produto');
 const prescricaoRoutes = require('./api/prescricao');
 
-// Usar rotas da API com prefixo /api e aplicar autenticação
 app.use('/api/cliente', authenticate, clienteRoutes);
 app.use('/api/produto', authenticate, produtoRoutes);
 app.use('/api/prescricao', authenticate, prescricaoRoutes);
 
-// Caminho para o banco de dados SQLite
 const dbPath = path.resolve(__dirname, '.', 'db', 'database.db');
 
-// Banco de dados SQLite
 const db = new sqlite3.Database(dbPath);
 
-// Criar tabelas se elas não existirem
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS clientes (telefone NUMBER PRIMARY KEY, nome TEXT NOT NULL, cpf NUMBER, email TEXT, sexo TEXT, nascimento DATE)");
     //db.run("CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, telefone TEXT NOT NULL)");
@@ -86,22 +80,18 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'index.html'));
 });
 
-// Rota para renderizar a página HTML quando acessar /cliente
 app.get('/cliente', authenticate, (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'cliente.html'));
 });
 
-// Rota para renderizar a página HTML quando acessar /produto
 app.get('/produto', authenticate, (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'produto.html'));
 });
 
-// Rota para renderizar a página HTML quando acessar /prescricao
 app.get('/prescricao', authenticate, (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'prescricao.html'));
 });
 
-// Iniciar o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
