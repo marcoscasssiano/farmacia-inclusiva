@@ -27,17 +27,17 @@ const upload = multer({ storage: storage });
 
 // Rotas CRUD para eventos
 // Create
-router.post('/', upload.array('imagens', 5), (req, res) => {
-    const imagens = req.files.map(file => file.path);
+router.post('/', upload.single('imagem'), (req, res) => {
     const { dataInicio, dataFim, sms, whatsapp, descricao } = req.body;
+    const imagemPath = req.file ? req.file.path : null; // Salva o caminho da imagem ou null se não houver imagem
 
-    db.run(`INSERT INTO eventos (imagens, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao) VALUES (?, ?, ?, ?, ?, ?)`, [imagens.join(','), dataInicio, dataFim, sms, whatsapp, descricao], function(err) {
+    db.run(`INSERT INTO eventos (imagem, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao) VALUES (?, ?, ?, ?, ?, ?)`, [imagemPath, dataInicio, dataFim, sms, whatsapp, descricao], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json({
             id: this.lastID,
-            imagens: imagens,
+            imagem: imagemPath,
             data_inicio: dataInicio,
             data_fim: dataFim,
             receber_sms: sms,

@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const USERNAME = process.env.USER;
+const USERNAME = process.env.USERADMIN;
 const PASSWORD = process.env.PASSWORD;
 
 console.log(USERNAME, PASSWORD);
