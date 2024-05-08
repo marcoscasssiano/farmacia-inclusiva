@@ -56,23 +56,44 @@ app.post('/login', (req, res) => {
 app.use(express.static('pages'));
 
 const clienteRoutes = require('./api/cliente');
-const produtoRoutes = require('./api/produto');
 const prescricaoRoutes = require('./api/prescricao');
+const eventosRoutes = require('./api/eventos')
 
 app.use('/api/cliente', authenticate, clienteRoutes);
-app.use('/api/produto', authenticate, produtoRoutes);
 app.use('/api/prescricao', authenticate, prescricaoRoutes);
+app.use('/api/eventos', authenticate, eventosRoutes);
 
 const dbPath = path.resolve(__dirname, '.', 'db', 'database.db');
 
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS clientes (telefone NUMBER PRIMARY KEY, nome TEXT NOT NULL, cpf NUMBER, email TEXT, sexo TEXT, nascimento DATE)");
-    //db.run("CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, telefone TEXT NOT NULL)");
-    db.run("CREATE TABLE IF NOT EXISTS produtos (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, tipo_uso TEXT NOT NULL, informacoes TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS prescricoes (telefone NUMBER PRIMARY KEY, data_inicio DATE, data_fim DATE, sms BOOLEAN, app BOOLEAN, prescricao TEXT)");
-    //db.run("CREATE TABLE IF NOT EXISTS prescricoes (id INTEGER PRIMARY KEY AUTOINCREMENT, nome_cliente TEXT NOT NULL, telefone_cliente TEXT NOT NULL, produto_nome TEXT, vezes_uso NUMBER NOT NULL, hora TEXT NOT_NULL)");
+    db.run(`CREATE TABLE IF NOT EXISTS clientes (
+        telefone NUMBER PRIMARY KEY, 
+        nome TEXT NOT NULL, 
+        cpf NUMBER, 
+        email TEXT, 
+        sexo TEXT, 
+        nascimento DATE
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS prescricoes (
+        telefone_cliente NUMBER PRIMARY KEY,
+        nome_cliente TEXT, data_inicio DATE,
+        data_fim DATE, receber_sms BOOLEAN,
+        receber_whatsapp BOOLEAN, descricao TEXT,
+        enviado BOOLEAN
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS eventos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        imagem BLOB,
+        data_inicio DATE,
+        data_fim DATE,
+        receber_sms BOOLEAN,
+        receber_whatsapp BOOLEAN,
+        descricao TEXT
+    )`);
 });
 
 // Rota para renderizar a página HTML quando acessar /cliente
@@ -84,12 +105,12 @@ app.get('/cliente', authenticate, (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'cliente.html'));
 });
 
-app.get('/produto', authenticate, (req, res) => {
-    res.sendFile(path.join(__dirname, 'pages', 'produto.html'));
-});
-
 app.get('/prescricao', authenticate, (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'prescricao.html'));
+});
+
+app.get('/eventos', authenticate, (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'eventos.html'));
 });
 
 app.listen(PORT, () => {

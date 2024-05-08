@@ -7,7 +7,7 @@ router.use(express.json());
 // Caminho para o banco de dados SQLite
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const dbPath = path.resolve(__dirname, '../', 'db', 'database.db'); // Supondo que o arquivo database.db esteja um diretório acima
+const dbPath = path.resolve(__dirname, '../', 'db', 'database.db'); // Supondo que o arquivo database.db esteja um diretório acima, conferir como funciona no render
 
 // Banco de dados SQLite
 const db = new sqlite3.Database(dbPath);
@@ -15,18 +15,19 @@ const db = new sqlite3.Database(dbPath);
 // Rotas CRUD para prescrições
 // Create
 router.post('/', (req, res) => {
-    const { nome_cliente, telefone_cliente, produto_nome,vezes_uso, hora } = req.body;
-    db.run(`INSERT INTO prescricoes (nome_cliente, telefone_cliente, produto_nome, vezes_uso, hora) VALUES (?, ?, ?, ?, ?)`, [nome_cliente, telefone_cliente, produto_nome, vezes_uso, hora], function(err) {
+    const { nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao } = req.body;
+    db.run(`INSERT INTO prescricoes (nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao) VALUES (?, ?, ?, ?, ?, ?)`, [nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json({
             id: this.lastID,
             nome_cliente: nome_cliente,
-            telefone_cliente: telefone_cliente,
-            produto_nome: produto_nome,
-            vezes_uso: vezes_uso,
-            hora: hora
+            data_inicio: data_inicio,
+            data_fim: data_fim,
+            receber_sms: receber_sms,
+            receber_whatsapp: receber_whatsapp,
+            descricao: descricao
         });
     });
 });
@@ -43,17 +44,20 @@ router.get('/', (req, res) => {
 
 // Update
 router.put('/:id', (req, res) => {
-    const { nome_cliente, telefone_cliente, produto_nome } = req.body;
+    const { nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao } = req.body;
     const { id } = req.params;
-    db.run(`UPDATE prescricoes SET nome_cliente = ?, telefone_cliente = ?, produto_nome = ? WHERE id = ?`, [nome_cliente, telefone_cliente, produto_nome, id], function(err) {
+    db.run(`UPDATE prescricoes SET nome_cliente = ?, data_inicio = ?, data_fim = ?, receber_sms = ?, receber_whatsapp = ?, descricao = ? WHERE id = ?`, [nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao, id], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json({
             id: id,
             nome_cliente: nome_cliente,
-            telefone_cliente: telefone_cliente,
-            produto_nome: produto_nome,
+            data_inicio: data_inicio,
+            data_fim: data_fim,
+            receber_sms: receber_sms,
+            receber_whatsapp: receber_whatsapp,
+            descricao: descricao
         });
     });
 });

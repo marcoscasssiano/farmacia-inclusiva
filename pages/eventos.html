@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendar Prescrição</title>
+    <title>Agendar Evento</title>
 </head>
 <body>
     <header>
@@ -12,12 +12,8 @@
         <a href="http://localhost:3000/prescricao">Prescrições</a>
         <a href="http://localhost:3000/eventos">Evento</a>
     </header>
-    <h1>Agendar Prescrição</h1>
+    <h1>Agendar Evento</h1>
     <form id="scheduleForm">
-        <label for="cliente">Cliente:</label>
-        <select id="cliente" name="cliente" required>
-            <option value="" selected disabled>Selecione um cliente</option>
-        </select><br>
         <label for="dataInicio">Data de Início:</label>
         <input type="date" id="dataInicio" name="dataInicio" required><br>
         <label for="dataFim">Data de Fim:</label>
@@ -26,11 +22,13 @@
         <label for="sms">Receber por SMS</label><br>
         <input type="checkbox" id="whatsapp" name="whatsapp">
         <label for="whatsapp">Receber por WhatsApp</label><br>
-        <label for="descricao">Descreva a Prescrição:</label><br>
-        <textarea id="descricao" name="descricao" rows="4" cols="50" required></textarea><br>
+        <label for="descricao">Descreva o Evento:</label><br>
+        <textarea id="descricao" name="descricao" rows="4" cols="50"></textarea><br>
+        <label for="imagem">Imagem:</label>
+        <input type="file" id="imagem" name="imagem" accept="image/*"><br>
         <button type="submit">Agendar</button>
     </form>
 
-    <script src="./script/prescricao.js"></script>
+    <script src="./script/eventos.js"></script>
 </body>
 </html>

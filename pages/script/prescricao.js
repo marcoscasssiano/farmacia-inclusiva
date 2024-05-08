@@ -2,10 +2,11 @@ document.getElementById('scheduleForm').addEventListener('submit', function (eve
     event.preventDefault();
 
     const clienteNome = document.getElementById('cliente').value;
-    const clienteTelefone = document.getElementById('cliente').selectedOptions[0].dataset.telefone;
-    const produtoNome = document.getElementById('produto').value;
-    const vezes = document.getElementById('vezes').value;
-    const hora = document.getElementById('hora').value;
+    const dataInicio = document.getElementById('dataInicio').value;
+    const dataFim = document.getElementById('dataFim').value;
+    const sms = document.getElementById('sms').checked;
+    const whatsapp = document.getElementById('whatsapp').checked;
+    const descricao = document.getElementById('descricao').value;
 
     fetch('http://localhost:3000/api/prescricao', {
         method: 'POST',
@@ -14,10 +15,11 @@ document.getElementById('scheduleForm').addEventListener('submit', function (eve
         },
         body: JSON.stringify({
             nome_cliente: clienteNome,
-            telefone_cliente: clienteTelefone,
-            produto_nome: produtoNome,
-            vezes_uso: vezes,
-            hora: hora
+            data_inicio: dataInicio,
+            data_fim: dataFim,
+            receber_sms: sms,
+            receber_whatsapp: whatsapp,
+            descricao: descricao
         })
     })
         .then(response => response.json())
@@ -25,9 +27,11 @@ document.getElementById('scheduleForm').addEventListener('submit', function (eve
             alert('Prescrição agendada com sucesso!');
             // Limpar o formulário após o agendamento
             document.getElementById('cliente').selectedIndex = 0;
-            document.getElementById('produto').selectedIndex = 0;
-            document.getElementById('vezes').value = '';
-            document.getElementById('hora').value = '';
+            document.getElementById('dataInicio').value = '';
+            document.getElementById('dataFim').value = '';
+            document.getElementById('sms').checked = false;
+            document.getElementById('whatsapp').checked = false;
+            document.getElementById('descricao').value = '';
         })
         .catch(error => console.error('Erro:', error));
 });
@@ -43,30 +47,10 @@ function populateClientes() {
                 const option = document.createElement('option');
                 option.value = cliente.nome;
                 option.textContent = cliente.nome;
-                option.dataset.telefone = cliente.telefone; // Armazenar telefone como um atributo de dados
                 selectCliente.appendChild(option);
             });
         })
         .catch(error => console.error('Erro:', error));
 }
 
-// Função para popular dinamicamente a lista de produtos
-// function populateProdutos() {
-//     fetch('http://localhost:3000/api/produto')
-//         .then(response => response.json())
-//         .then(data => {
-//             const selectProduto = document.getElementById('produto');
-//             selectProduto.innerHTML = ""; // Limpar o conteúdo anterior
-//             data.forEach(produto => {
-//                 const option = document.createElement('option');
-//                 option.value = produto.nome;
-//                 option.textContent = produto.nome;
-//                 selectProduto.appendChild(option);
-//             });
-//         })
-//     .catch(error => console.error('Erro:', error));
-// }
-
-// Chamar as funções para popular as listas de clientes e produtos
 populateClientes();
-// populateProdutos();
