@@ -2,6 +2,7 @@ document.getElementById('scheduleForm').addEventListener('submit', function (eve
     event.preventDefault();
 
     const clienteNome = document.getElementById('cliente').value;
+    const clienteTelefone = document.getElementById('cliente').selectedOptions[0].dataset.telefone;
     const dataInicio = document.getElementById('dataInicio').value;
     const dataFim = document.getElementById('dataFim').value;
     const sms = document.getElementById('sms').checked;
@@ -14,6 +15,7 @@ document.getElementById('scheduleForm').addEventListener('submit', function (eve
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+            telefone_cliente: clienteTelefone,
             nome_cliente: clienteNome,
             data_inicio: dataInicio,
             data_fim: dataFim,
@@ -34,7 +36,9 @@ document.getElementById('scheduleForm').addEventListener('submit', function (eve
             document.getElementById('descricao').value = '';
         })
         .catch(error => console.error('Erro:', error));
+
 });
+
 
 // Função para popular dinamicamente a lista de clientes
 function populateClientes() {
@@ -47,10 +51,10 @@ function populateClientes() {
                 const option = document.createElement('option');
                 option.value = cliente.nome;
                 option.textContent = cliente.nome;
+                option.dataset.telefone = cliente.telefone; // Armazenar telefone como um atributo de dados
                 selectCliente.appendChild(option);
             });
         })
         .catch(error => console.error('Erro:', error));
 }
-
 populateClientes();

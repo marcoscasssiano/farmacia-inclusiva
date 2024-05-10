@@ -58,7 +58,9 @@ app.use(express.static('pages'));
 const clienteRoutes = require('./api/cliente');
 const prescricaoRoutes = require('./api/prescricao');
 const eventosRoutes = require('./api/eventos')
+const mandaPrescricao = require('./api/mandaPrescricao')
 
+app.use('/api/mandaPrescricao', mandaPrescricao);
 app.use('/api/cliente', authenticate, clienteRoutes);
 app.use('/api/prescricao', authenticate, prescricaoRoutes);
 app.use('/api/eventos', authenticate, eventosRoutes);
@@ -94,6 +96,18 @@ db.serialize(() => {
         receber_whatsapp BOOLEAN,
         descricao TEXT
     )`);
+
+    db.all(`SELECT name FROM sqlite_master WHERE type='table'`, (err, tables) => {
+        if (err) {
+            console.error('Erro ao obter as tabelas:', err.message);
+            return;
+        }
+        
+        console.log('Tabelas existentes no banco de dados:');
+        tables.forEach(table => {
+            console.log(table.name);
+        });
+    });
 });
 
 // Rota para renderizar a página HTML quando acessar /cliente

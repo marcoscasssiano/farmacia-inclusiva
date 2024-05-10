@@ -15,13 +15,14 @@ const db = new sqlite3.Database(dbPath);
 // Rotas CRUD para prescrições
 // Create
 router.post('/', (req, res) => {
-    const { nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao } = req.body;
-    db.run(`INSERT INTO prescricoes (nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao) VALUES (?, ?, ?, ?, ?, ?)`, [nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao], function(err) {
+    const { telefone_cliente, nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao } = req.body;
+    db.run(`INSERT INTO prescricoes (telefone_cliente, nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao) VALUES (?, ?, ?, ?, ?, ?, ?)`, [telefone_cliente, nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao], function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json({
             id: this.lastID,
+            telefone_cliente: telefone_cliente,
             nome_cliente: nome_cliente,
             data_inicio: data_inicio,
             data_fim: data_fim,
@@ -63,14 +64,13 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete
-router.delete('/:id', (req, res) => {
-    const { id } = req.params;
-    db.run(`DELETE FROM prescricoes WHERE id = ?`, id, function(err) {
+router.delete('/:telefone_cliente', (req, res) => {
+    const { telefone_cliente } = req.params;
+    db.run(`DELETE FROM prescricoes WHERE telefone_cliente = ?`, telefone_cliente, function(err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json({ message: 'Prescrição deletada com sucesso!' });
     });
 });
-
 module.exports = router;
