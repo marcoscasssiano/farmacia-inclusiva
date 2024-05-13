@@ -1,6 +1,7 @@
 const axios = require('axios');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
 
 // Caminho para o banco de dados SQLite
 const dbPath = path.resolve(__dirname, '..', 'db', 'database.db'); // Alteração aqui para voltar um nível acima
@@ -13,22 +14,32 @@ async function mandaPrescricao() {
     try {
         // Consulta o banco de dados para obter todas as prescrições
         const prescricoes = await consultarPrescricoes();
+        console.log(prescricoes);
+
+        // Função auxiliar para aguardar um certo tempo
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         // Percorre todas as prescrições
-        for (const prescricao of prescricoes) {
-            // Verifica se a data inicial é menor que a data final
-            if (prescricao.data_inicio < prescricao.data_fim) {
-                // Se receber SMS e receber WhatsApp forem iguais a 1, envia ambos
-                if (prescricao.receber_sms === 1 && prescricao.receber_whatsapp === 1) {
-                    await enviarSMS(prescricao.telefone_cliente, prescricao.descricao);
-                    await enviarWhatsApp(prescricao.telefone_cliente, prescricao.descricao);
-                } else if (prescricao.receber_sms === 1) { // Se receber SMS for igual a 1, envia SMS
-                    await enviarSMS(prescricao.telefone_cliente, prescricao.descricao);
-                } else if (prescricao.receber_whatsapp === 1) { // Se receber WhatsApp for igual a 1, envia WhatsApp
-                    await enviarWhatsApp(prescricao.telefone_cliente, prescricao.descricao);
+        // Percorre todas as prescrições
+        for (let i = 0; i < prescricoes.length; i++) {
+            const prescricao = prescricoes[i];
+            // Verifica se a data inicial é menor ou igual à data final
+            if (prescricao.data_inicio <= prescricao.data_fim) {
+
+                if (prescricao.receber_whatsapp == 1 && prescricao.receber_sms == 1){
+                // Envia SMS e WhatsApp para o número da prescrição
+                await enviarMensagem(prescricao.telefone_cliente, prescricao.descricao);
+                // Aguarda 10 segundos antes de prosseguir para a próxima prescrição
+                } else if (prescricao.receber_whatsapp == 1){
+                    await enviarWhatsApp(prescricao.telefone_cliente, prescricao.descricao)
+                } else if (prescricao.receber_sms == 1){
+                    await enviarSMS(prescricao.telefone_cliente, prescricao.descricao)
                 }
+                await wait(1000); // 10 segundos em milissegundos
             }
         }
+        await atualizarDataInicio()
+
     } catch (error) {
         throw new Error('Erro ao consultar prescrições ou enviar mensagens: ' + error.message);
     }
@@ -47,6 +58,36 @@ async function consultarPrescricoes() {
     });
 }
 
+async function atualizarDataInicio() {
+    try {
+        // Atualize a data de início das prescrições no banco de dados
+        await new Promise((resolve, reject) => {
+            db.run('UPDATE prescricoes SET data_inicio = DATE(data_inicio, "+1 day") WHERE data_inicio <= data_fim', (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    } catch (error) {
+        throw new Error('Erro ao atualizar data de início da prescrição: ' + error.message);
+    }
+}
+
+// Função para enviar mensagem via SMS ou WhatsApp
+async function enviarMensagem(numero, mensagem) {
+    try {
+        // Envia mensagem via SMS
+        await enviarSMS(numero, mensagem);
+        // Envia mensagem via WhatsApp
+        await enviarWhatsApp(numero, mensagem);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Erro ao enviar mensagem: ' + error.message);
+    }
+}
+
 // Função para enviar SMS
 async function enviarSMS(telefone, mensagem) {
     // try {
@@ -55,28 +96,27 @@ async function enviarSMS(telefone, mensagem) {
     // } catch (error) {
     //     throw new Error('Erro ao enviar SMS: ' + error.message);
     // }
-
-    console.log("SMS")
+    console.log("TESTE SMS")
 }
 
 // Função para enviar mensagem via WhatsApp
 async function enviarWhatsApp(numero, mensagem) {
+    try {
         let options = {
             method: 'POST',
             url: 'https://api.wzap.chat/v1/messages',
             headers: {
-              'Content-Type': 'application/json',
-              Token: `${process.env.WPPDEV}`
+                'Content-Type': 'application/json',
+                Token: process.env.WPPDEV // Use process.env para acessar as variáveis de ambiente
             },
-            data: {phone: `+55'${numero}'`, message: `'${mensagem}'`}
-          };
+            data: {phone: `+55${numero}`, message: mensagem} // Remova as aspas desnecessárias aqui
+        };
 
-        await axios.request(options).then(function (response) {
-            console.log(response.data);
-          }).catch(function (error) {
-            console.error(error);
-          });
-    
+        const response = await axios.request(options);
+        console.log(response.data);
+    } catch (error) {
+        throw new Error('Erro ao enviar mensagem via WhatsApp: ' + error.message);
+    }
 }
 
 module.exports = mandaPrescricao;

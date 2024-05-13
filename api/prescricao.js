@@ -8,7 +8,7 @@ router.use(express.json());
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const dbPath = path.resolve(__dirname, '../', 'db', 'database.db'); // Supondo que o arquivo database.db esteja um diretório acima, conferir como funciona no render
-
+const axios = require('axios');
 // Banco de dados SQLite
 const db = new sqlite3.Database(dbPath);
 
@@ -31,6 +31,7 @@ router.post('/', (req, res) => {
             descricao: descricao
         });
     });
+
 });
 
 // Read

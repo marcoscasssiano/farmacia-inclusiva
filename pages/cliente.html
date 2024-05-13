@@ -4,15 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exibir Dados da Tabela</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #ff4444; /* Vermelho */
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        header a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        h1 {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff4444; /* Vermelho */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #cc0000; /* Vermelho mais escuro */
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
     <header>
-        Logo
         <a href="http://localhost:3000/cliente">Cliente</a>
         <a href="http://localhost:3000/prescricao">Prescrições</a>
-        <a href="http://localhost:3000/eventos">Evento</a>
     </header>
-    <h1>Cadastro de Clientes</h1>
+    <h1>Cadastro de Clientes:</h1>
     <form id="addClientForm">
         <label for="nome">Nome:</label>
         <input type="text" id="nome" name="nome" required><br>
@@ -24,12 +99,12 @@
         <input type="email" id="email" name="email"><br>
         <label for="sexo">Sexo:</label>
         <input type="text" id="sexo" name="sexo"><br>
-        <label for="nascimento"></label>
+        <label for="nascimento">Data de Nascimento:</label>
         <input type="date" id="nascimento" name="nascimento">
         <button type="submit">Adicionar Cliente</button>
     </form>
 
-    <h1>Clientes Cadastrados</h1>
+    <h1>Clientes Cadastrados:</h1>
     <ul id="dataList"></ul>
 
     <script src="./script/cliente.js"></script>
