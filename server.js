@@ -9,6 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const USERNAME = process.env.USERADMIN;
 const PASSWORD = process.env.PASSWORD;
+console.log(process.env.BASE_URL)
 
 console.log(USERNAME, PASSWORD);
 
