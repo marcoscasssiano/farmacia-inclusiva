@@ -10,37 +10,30 @@ const PORT = process.env.PORT || 3000;
 const USERNAME = process.env.USERADMIN;
 const PASSWORD = process.env.PASSWORD;
 console.log(process.env.BASE_URL)
-
 console.log(USERNAME, PASSWORD);
 
-// Variável de sessão para controlar o status de autenticação
 let isAuthenticated = false;
 
-// Função para definir isAuthenticated como false após 15 minutos
 const resetAuthentication = () => {
     isAuthenticated = false;
     console.log('Autenticação expirada');
 };
 
-// Definir temporizador para redefinir a autenticação após 15 minutos (em milissegundos)
 let authenticationTimer = setTimeout(resetAuthentication, 15 * 60 * 1000);
 
 // Middleware para autenticar as rotas privadas
 const authenticate = (req, res, next) => {
     if (isAuthenticated) {
-        // Reiniciar o temporizador quando a autenticação é bem-sucedida
         clearTimeout(authenticationTimer);
         authenticationTimer = setTimeout(resetAuthentication, 15 * 60 * 1000);
-        next(); // Continue para a próxima rota se a autenticação for bem-sucedida
+        next();
     } else {
         res.sendStatus(401); // Não autorizado
     }
 };
 
-// Middleware para lidar com JSON
 app.use(express.json());
 
-// Rota para o login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     if (username === USERNAME && password === PASSWORD) {
@@ -56,13 +49,13 @@ app.post('/login', (req, res) => {
 
 app.use(express.static('pages'));
 
-const clienteRoutes = require('./api/cliente');
-const prescricaoRoutes = require('./api/prescricao');
-const mandaPrescricao = require('./api/mandaPrescricao')
+const clienteRoutes = require('./middleware/cliente');
+const prescricaoRoutes = require('./middleware/prescricao');
+const mandaPrescricao = require('./middleware/mandaPrescricao')
 
-app.use('/api/mandaPrescricao', mandaPrescricao);
-app.use('/api/cliente', authenticate, clienteRoutes);
-app.use('/api/prescricao', authenticate, prescricaoRoutes);
+app.use('/middleware/mandaPrescricao', mandaPrescricao);
+app.use('/middleware/cliente', authenticate, clienteRoutes);
+app.use('/middleware/prescricao', authenticate, prescricaoRoutes);
 
 const dbPath = path.resolve(__dirname, '.', 'db', 'database.db');
 
@@ -87,7 +80,6 @@ db.serialize(() => {
     )`);
 });
 
-// Rota para renderizar a página HTML quando acessar /cliente
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'index.html'));
 });

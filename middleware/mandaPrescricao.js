@@ -60,7 +60,6 @@ async function consultarPrescricoes() {
 
 async function atualizarDataInicio() {
     try {
-        // Atualize a data de início das prescrições no banco de dados
         await new Promise((resolve, reject) => {
             db.run('UPDATE prescricoes SET data_inicio = DATE(data_inicio, "+1 day") WHERE data_inicio <= data_fim', (err) => {
                 if (err) {
@@ -75,7 +74,6 @@ async function atualizarDataInicio() {
     }
 }
 
-// Função para enviar mensagem via SMS ou WhatsApp
 async function enviarMensagem(numero, mensagem) {
     try {
         // Envia mensagem via SMS
@@ -90,12 +88,6 @@ async function enviarMensagem(numero, mensagem) {
 
 // Função para enviar SMS
 async function enviarSMS(telefone, mensagem) {
-    // try {
-    //     const response = await axios.get(`http://api.smsdev.com.br/v1/send?key=${process.env.SMSDEV}&type=9&number=${process.env.telefone}&msg=${encodeURIComponent(mensagem)}`);
-    //     console.log(response.data);
-    // } catch (error) {
-    //     throw new Error('Erro ao enviar SMS: ' + error.message);
-    // }
     console.log("TESTE SMS")
 }
 
@@ -107,9 +99,9 @@ async function enviarWhatsApp(numero, mensagem) {
             url: 'https://api.wzap.chat/v1/messages',
             headers: {
                 'Content-Type': 'application/json',
-                Token: process.env.WPPDEV // Use process.env para acessar as variáveis de ambiente
+                Token: process.env.WPPDEV
             },
-            data: {phone: `+55${numero}`, message: mensagem} // Remova as aspas desnecessárias aqui
+            data: {phone: `+55${numero}`, message: mensagem}
         };
 
         const response = await axios.request(options);

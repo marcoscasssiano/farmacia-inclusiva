@@ -7,13 +7,11 @@ router.use(express.json());
 // Caminho para o banco de dados SQLite
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const dbPath = path.resolve(__dirname, '../', 'db', 'database.db'); // Supondo que o arquivo database.db esteja um diretório acima, conferir como funciona no render
+const dbPath = path.resolve(__dirname, '../', 'db', 'database.db'); 
 const axios = require('axios');
 // Banco de dados SQLite
 const db = new sqlite3.Database(dbPath);
 
-// Rotas CRUD para prescrições
-// Create
 router.post('/', (req, res) => {
     const { telefone_cliente, nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao } = req.body;
     db.run(`INSERT INTO prescricoes (telefone_cliente, nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao) VALUES (?, ?, ?, ?, ?, ?, ?)`, [telefone_cliente, nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao], function(err) {
@@ -34,7 +32,6 @@ router.post('/', (req, res) => {
 
 });
 
-// Read
 router.get('/', (req, res) => {
     db.all("SELECT * FROM prescricoes", (err, rows) => {
         if (err) {
