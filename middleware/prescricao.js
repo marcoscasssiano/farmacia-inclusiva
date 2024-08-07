@@ -1,15 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Middleware para lidar com JSON
 router.use(express.json());
 
-// Caminho para o banco de dados SQLite
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const dbPath = path.resolve(__dirname, '../', 'db', 'database.db'); 
-const axios = require('axios');
-// Banco de dados SQLite
 const db = new sqlite3.Database(dbPath);
 
 router.post('/', (req, res) => {
@@ -41,7 +37,6 @@ router.get('/', (req, res) => {
     });
 });
 
-// Update
 router.put('/:id', (req, res) => {
     const { nome_cliente, data_inicio, data_fim, receber_sms, receber_whatsapp, descricao } = req.body;
     const { id } = req.params;
@@ -61,7 +56,6 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// Delete
 router.delete('/:telefone_cliente', (req, res) => {
     const { telefone_cliente } = req.params;
     db.run(`DELETE FROM prescricoes WHERE telefone_cliente = ?`, telefone_cliente, function(err) {

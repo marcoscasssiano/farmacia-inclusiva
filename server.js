@@ -21,14 +21,13 @@ const resetAuthentication = () => {
 
 let authenticationTimer = setTimeout(resetAuthentication, 15 * 60 * 1000);
 
-// Middleware para autenticar as rotas privadas
 const authenticate = (req, res, next) => {
     if (isAuthenticated) {
         clearTimeout(authenticationTimer);
         authenticationTimer = setTimeout(resetAuthentication, 15 * 60 * 1000);
         next();
     } else {
-        res.sendStatus(401); // Não autorizado
+        res.sendStatus(401);
     }
 };
 
@@ -37,8 +36,7 @@ app.use(express.json());
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     if (username === USERNAME && password === PASSWORD) {
-        isAuthenticated = true; // Definir autenticação como verdadeira
-        // Reiniciar o temporizador quando o login é bem-sucedido
+        isAuthenticated = true;
         clearTimeout(authenticationTimer);
         authenticationTimer = setTimeout(resetAuthentication, 15 * 60 * 1000);
         res.sendStatus(200);
